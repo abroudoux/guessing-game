@@ -1,6 +1,7 @@
 use std::io;
 use rand::Rng;
 use std::cmp::Ordering;
+use std::time::{Instant, Duration};
 
 fn main() {
     println!("Guess the number");
@@ -8,12 +9,25 @@ fn main() {
     let secret_number = rand::thread_rng().gen_range(1..=100);
     let mut guesses = 0;
     let maximum_guesses = choose_difficulty();
+    let timer_duration = get_timer_duration(maximum_guesses);
+    let mut timer_started = false;
+    let mut timer = Instant::now();
 
-    // println!("The secret number is: {secret_number}");
+    println!("The secret number is: {secret_number}");
 
     loop {
         if guesses >= maximum_guesses {
             println!("You've reached the maximum of guesses!");
+            break;
+        }
+
+        if !timer_started {
+            timer_started = true;
+            timer = Instant::now();
+        }
+
+        if timer.elapsed() > timer_duration {
+            println!("Time's up! You took to long.");
             break;
         }
 
@@ -44,7 +58,9 @@ fn main() {
         }
     }
 
+    let elapsed_time = timer.elapsed();
     println!("Total guesses: {guesses}");
+    println!("Elapsed time: {:.2?}", elapsed_time)
 
 }
 
@@ -73,4 +89,14 @@ fn choose_difficulty() -> u32 {
         }
     }
 
+}
+
+fn get_timer_duration(maximun_guesses: u32) -> Duration {
+
+    match maximun_guesses {
+        10 => Duration::from_secs(30),
+        7 => Duration::from_secs(20),
+        5 => Duration::from_secs(15),
+        _ => Duration::from_secs(20),
+    }
 }
