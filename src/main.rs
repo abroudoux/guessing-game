@@ -4,7 +4,7 @@ use std::cmp::Ordering;
 use std::time::{Instant, Duration};
 
 fn main() {
-    println!("Guess the number");
+    println!("\x1b[1;34mGuess the number\x1b[0m");
 
     let secret_number = rand::thread_rng().gen_range(1..=100);
     let mut guesses = 0;
@@ -14,11 +14,11 @@ fn main() {
     let mut timer = Instant::now();
     let mut points = 50;
 
-    println!("The secret number is: {secret_number}");
+    println!("\x1b[0;34mThe secret number is: {secret_number}\x1b[0m");
 
     loop {
         if guesses >= maximum_guesses {
-            println!("You've reached the maximum of guesses!");
+            println!("\x1b[1;31mYou've reached the maximum of guesses!\x1b[0m");
             break;
         }
 
@@ -28,7 +28,7 @@ fn main() {
         }
 
         if timer.elapsed() > timer_duration {
-            println!("Time's up! You took to long.");
+            println!("\x1b[1;31mTime's up! You took too long.\x1b[0m");
             break;
         }
 
@@ -51,15 +51,14 @@ fn main() {
 
         match guess.cmp(&secret_number) {
             Ordering::Less => {
-                println!("Too small!");
+                println!("\x1b[1;31mToo small!\x1b[0m");
                 points -= 2;
             }
             Ordering::Greater => {
-                println!("Too big!");
+                println!("\x1b[1;31mToo big!\x1b[0m");
                 points -= 2;
             }
             Ordering::Equal => {
-                println!("Yo win!");
                 show_results(timer.elapsed().as_secs(), guesses, points);
                 break;
             },
@@ -87,7 +86,7 @@ fn choose_difficulty() -> u32 {
             Ok(2) => return 7,
             Ok(3) => return 5,
             _ => {
-                println!("Invalid choice. Please try again");
+                println!("\x1b[0;31mInvalid choice. Please try again\x1b[0m");
                 continue;
             }
         }
@@ -107,7 +106,13 @@ fn get_timer_duration(maximun_guesses: u32) -> Duration {
 
 fn show_results(elapsed_time: u64, guesses: u32, points: i32) {
     let points_finals = points - elapsed_time as i32;
-    println!("Total guesses: {guesses}");
-    println!("Elapsed time: {} seconds", elapsed_time);
-    println!("Points: {}", points_finals);
+    println!("\x1b[1;32mYou win!\x1b[0m");
+    println!("\x1b[0;32mTotal guesses: {guesses}\x1b[0m");
+    println!("\x1b[0;32mElapsed time: {elapsed_time} seconds\x1b[0m");
+
+    if points_finals > 0 {
+        println!("\x1b[0;32mPoints: {points_finals}\x1b[0m");
+    } else {
+        println!("\x1b[0;31mPoints: {points_finals}\x1b[0m");
+    }
 }
