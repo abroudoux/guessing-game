@@ -12,6 +12,7 @@ fn main() {
     let timer_duration = get_timer_duration(maximum_guesses);
     let mut timer_started = false;
     let mut timer = Instant::now();
+    let mut points = 50;
 
     println!("The secret number is: {secret_number}");
 
@@ -49,19 +50,21 @@ fn main() {
         println!("You guessed: {guess}");
 
         match guess.cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
+            Ordering::Less => {
+                println!("Too small!");
+                points -= 2;
+            }
+            Ordering::Greater => {
+                println!("Too big!");
+                points -= 2;
+            }
             Ordering::Equal => {
                 println!("Yo win!");
-                calculate_and_display_points(timer.elapsed().as_secs());
+                show_results(timer.elapsed().as_secs(), guesses, points);
                 break;
             },
         }
     }
-
-    let elapsed_time = timer.elapsed();
-    println!("Total guesses: {guesses}");
-    println!("Elapsed time: {:.2?}", elapsed_time);
 
 }
 
@@ -102,7 +105,9 @@ fn get_timer_duration(maximun_guesses: u32) -> Duration {
     }
 }
 
-fn calculate_and_display_points(elapsed_time: u64) {
-    let points = 50 - elapsed_time as i32;
-    println!("Points: {}", points);
+fn show_results(elapsed_time: u64, guesses: u32, points: i32) {
+    let points_finals = points - elapsed_time as i32;
+    println!("Total guesses: {guesses}");
+    println!("Elapsed time: {} seconds", elapsed_time);
+    println!("Points: {}", points_finals);
 }
