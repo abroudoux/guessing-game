@@ -53,6 +53,7 @@ fn main() {
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
                 println!("Yo win!");
+                calculate_and_display_points(timer.elapsed().as_secs());
                 break;
             },
         }
@@ -60,7 +61,7 @@ fn main() {
 
     let elapsed_time = timer.elapsed();
     println!("Total guesses: {guesses}");
-    println!("Elapsed time: {:.2?}", elapsed_time)
+    println!("Elapsed time: {:.2?}", elapsed_time);
 
 }
 
@@ -99,4 +100,9 @@ fn get_timer_duration(maximun_guesses: u32) -> Duration {
         5 => Duration::from_secs(15),
         _ => Duration::from_secs(20),
     }
+}
+
+fn calculate_and_display_points(elapsed_time: u64) {
+    let points = 50 - elapsed_time as i32;
+    println!("Points: {}", points);
 }
